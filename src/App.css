@@ -1,0 +1,257 @@
+a
+{
+	color: #00A843;
+}
+
+.container
+{
+	display: flex;
+}
+
+.content
+{
+	flex-grow: 3;
+}
+
+.sidebar
+{
+	width: 200px;
+	background: #00A843;
+	color: white;
+	text-align: center;
+	font-family: .AppleSystemUIFont;
+	font-size: 16px;
+	min-height: 100vh;
+}
+
+.sidebar .logo
+{
+	margin-top: 37px;
+}
+
+.sidebar .site-title
+{
+	margin: 13px 0 0;
+	font-weight: 100;
+	font-size: 16px;
+}
+
+.sidebar .current-user
+{
+	margin-top: 41px;
+}
+
+.sidebar .current-user:before
+{
+	background: rgba(255,255,255,0.20);
+	width: 75%;
+	height: 1px;
+	display: block;
+	content: '';
+	margin: 0 auto 37px;
+}
+
+.sidebar .current-user-name
+{
+	font-family: .SFNSDisplay;
+	font-size: 18px;
+	margin-top: 6px;
+	font-weight: 100;
+}
+
+.sidebar .current-user-logout
+{
+	font-family: .AppleSystemUIFont;
+	font-size: 16px;
+	font-weight: 100;
+	color: rgba(42,56,66,0.65);
+}
+
+.form-container
+{
+	width: 485px;
+	margin-left: 266px;
+	margin-top: 135px;
+}
+
+.form-container h1
+{
+	font-family: .SFNSDisplay;
+	font-size: 40px;
+	font-weight: 400;
+	color: #2A3842;
+	margin-bottom: 62px;
+	text-align: center;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"]
+{
+	border: 0;
+	border-bottom: 1px solid #455E70;
+	width: 100%;
+	background: none;
+	padding: 10px 0;
+	color: #2A3842;
+	font-size: 20px;
+	outline: none;
+	font-weight: 300;
+	margin-bottom: 40px;
+	font-family: .SFNSDisplay;
+}
+
+input::placeholder
+{
+	color: rgba(42,56,66,0.60);
+	font-size: 16px;
+	font-weight: 100;
+	font-family: .AppleSystemUIFont;
+}
+
+.btn
+{
+	width: 151px;
+	height: 40px;
+	background: #00A843;
+	color: white;
+	font-family: .AppleSystemUIFont;
+	font-size: 14px;
+	font-weight: 100;
+	text-transform: uppercase;
+	border: 0;
+	border-radius: 0;
+	cursor: pointer;
+}
+
+.form-footer
+{
+	margin-top: 24px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.form-footer span
+{
+	font-size: 16px;
+	color: #2A3842;
+}
+
+.form-footer span a
+{
+	text-decoration: none;
+}
+
+.content-container
+{
+	padding: 0 80px;
+	width: 915px;
+}
+
+.content-container .page-title
+{
+	font-family: .SFNSDisplay;
+	font-size: 28px;
+	color: #2A3842;
+	font-weight: 300;
+	margin: 0;
+	margin-left: 30px;
+}
+
+.content-container .page-header
+{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 40px 0 30px;
+	border-bottom: 1px solid rgba(42,56,66,0.20);
+}
+
+.empty-results
+{
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.empty-results-message
+{
+	margin-top: 100px;
+	font-family: .SFNSDisplay;
+	font-size: 20px;
+	color: #2A3842;
+	font-weight: 400;
+}
+
+.empty-results-message img
+{
+	margin-bottom: 23px;
+}
+
+.results
+{
+	padding-top: 39px;
+}
+
+.results table
+{
+	width: 95%;
+	margin-left: 5%;
+}
+
+.results table th
+{
+	font-family: .AppleSystemUIFont;
+	font-size: 14px;
+	color: #2A3842;
+	font-weight: 100;
+	text-align: center;
+	padding-bottom: 10px;
+}
+
+.results table th:nth-last-child(2)
+{
+	font-weight: bold;
+}
+
+.results table td:last-child img
+{
+	margin: 0 8px;
+}
+
+.results table td:nth-child(1)
+{
+	width: 50%;
+	text-align: left;
+	position: relative;
+}
+
+.results table td:nth-child(1):before
+{
+	display:list-item;
+	content: '';
+	position: absolute;
+	color: rgba(42,56,66,0.40);
+	left: 0;
+	transform: translate(-50%, -50%);
+	top: 50%;
+}
+
+.results table td
+{
+	text-align: center;
+	padding: 20px 0;
+	font-weight: 100;
+	font-size: 16px;
+	color: #2A3842;
+}
+
+.results input[type="text"],
+.results input[type="email"],
+.results input[type="password"]
+{
+	margin-bottom: 0;
+}
