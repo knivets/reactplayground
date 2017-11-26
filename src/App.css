@@ -231,7 +231,8 @@ input::placeholder
 	margin: 0 8px;
 }
 
-.results table td:nth-child(1)
+.results table td:nth-child(1),
+.table-form-cell:nth-child(1)
 {
 	width: 50%;
 	text-align: left;
@@ -276,4 +277,15 @@ input::placeholder
 {
 	margin-top: 200px;
 	text-align: center;
+}
+
+table.table-nested
+{
+	margin-left: 0;
+	width: 100%;
+}
+
+table.table-nested td:nth-child(1):before
+{
+	content: none;
 }

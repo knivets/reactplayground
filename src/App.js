@@ -16,10 +16,6 @@ import {
 	Main
 } from './components/index';
 
-function Loading(props){
-	return <div className="loading-screen">Loading...</div>;
-}
-
 const PrivateRoute = ({ component: Component, ...rest }) => {
 	if(rest.loaded === true){
 		return <Route {...rest} render={props => (
@@ -35,7 +31,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 	}
 	else
 	{
-		return <Route {...rest} render={() => <Loading/>}/>
+		return <Route {...rest} render={() => <div className="loading-screen">Loading...</div>}/>
 	}
 }
 
@@ -99,7 +95,6 @@ class App extends Component {
 					</aside>
 					<div className="content">
 						<PrivateRoute exact path="/" loaded={this.state.loaded} user={this.state.user} component={Main} />
-						<Route exact path="/loading" component={Loading}/>
 						<Route exact path="/login" render={() => <Login onAuthenticate={this.updateUser}/>} />
 						<Route exact path="/signup" render={() => <Signup onAuthenticate={this.updateUser}/>} />
 						<Route exact path="/logout" render={() => <Logout onLogout={this.updateUser}/>} />
@@ -109,7 +104,5 @@ class App extends Component {
     );
   }
 }
-
-//render={() => <Main loaded={this.state.loaded} user={this.state.user} />}
 
 export default App;

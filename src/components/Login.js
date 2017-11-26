@@ -17,13 +17,17 @@ class Login extends Component {
 			errors: ''
 		}
 		this.submit = this.submit.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
 	}
-	handleChangeFor = (propertyName) => (event) => {
-		let state = {
-      [propertyName]: event.target.value
-    };
-    this.setState(state);
-  }
+	handleInputChange(event) {
+		const target = event.target;
+		const value = target.type === 'checkbox' ? target.checked : target.value;
+		const name = target.name;
+
+		this.setState({
+			[name]: value
+		});
+	}
 	submit(event) {
 		event.preventDefault();
 		this.setState({errors: ''});
@@ -52,10 +56,10 @@ class Login extends Component {
 						{this.state.errors}
 					</div>
 					<div>
-						<input type="email" placeholder="Email" name="email" onChange={this.handleChangeFor('email')} required/>
+						<input type="email" placeholder="Email" name="email" onChange={this.handleInputChange} required/>
 					</div>
 					<div>
-						<input type="password" placeholder="Password" name="password" onChange={this.handleChangeFor('password')} required/>
+						<input type="password" placeholder="Password" name="password" onChange={this.handleInputChange} required/>
 					</div>
 					<div className="form-footer">
 						<input type="submit" className="btn" value="Log In"/>
