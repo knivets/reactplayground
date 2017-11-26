@@ -1,14 +1,29 @@
 import React, { Component } from 'react';
+import {
+	Redirect,
+} from 'react-router-dom'
+import {
+	removeTokens
+} from '../tokens';
 import '../App.css';
 
-class Login extends Component {
+class Logout extends Component {
+	constructor(props) {
+    super(props);
+		this.state = {
+			signedOut: false,
+		}
+	}
+	componentDidMount() {
+		removeTokens();
+		this.props.onLogout(() => this.setState({signedOut: true}))
+	}
   render() {
-    return (
-			<div>
-				Login page
-			</div>
-    );
+		if (this.state.signedOut) {
+			return <Redirect to="/"/>
+		}
+    return null;
   }
 }
 
-export default Login;
+export default Logout;

@@ -1,11 +1,27 @@
 import React, { Component } from 'react';
 import RetinaImage from 'react-retina-image';
+import { apiCall } from '../api';
 import '../App.css';
 import {
+  Redirect,
   Link
 } from 'react-router-dom'
 
-class List extends Component {
+class Main extends Component {
+	constructor(props) {
+    super(props);
+		this.state = {
+			ideas: []
+		}
+	}
+
+	componentDidMount() {
+		apiCall('ideas', (err, res) => {
+			if(res && res.status === 200){
+				this.setState({ideas: res.body})
+			}
+		});
+	}
   render() {
     return (
 			<div className="content-container">
@@ -68,4 +84,4 @@ class List extends Component {
   }
 }
 
-export default List;
+export default Main;
