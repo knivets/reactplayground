@@ -1,113 +1,10 @@
 import React, { Component } from 'react';
 import RetinaImage from 'react-retina-image';
+import update from 'immutability-helper';
+import shortid from 'shortid';
+import IdeaForm from './IdeaForm';
+import Idea from './Idea';
 import { apiCall } from '../api';
-import '../App.css';
-
-function IdeaList(props){
-	const items = props.data.map((item) => <Idea key={item.id} data={item}/>)
-	return items;
-}
-
-function Idea(props){
-	return (
-		<tr>
-			<td>{props.data.content}</td>
-			<td>{props.data.impact}</td>
-			<td>{props.data.ease}</td>
-			<td>{props.data.confidence}</td>
-			<td>{props.data.average_score}</td>
-			<td>
-				<RetinaImage src={process.env.PUBLIC_URL + '/images/pen.png'} alt=""/>
-				<RetinaImage src={process.env.PUBLIC_URL + '/images/bin.png'} alt=""/>
-			</td>
-		</tr>
-	)
-}
-
-class IdeaForm extends Component {
-	constructor(props) {
-    super(props);
-		var state;
-		if(props.data){
-			state = props.data;
-		}
-		else {
-			state = {
-				content: '',
-				impact: 0,
-				ease: 0,
-				confidence: 0
-			}
-		}
-		this.state = state;
-		this.submit = this.submit.bind(this);
-		this.handleInputChange = this.handleInputChange.bind(this);
-	}
-	submit(event) {
-		event.preventDefault();
-		apiCall('ideas', (err, res) => {
-			if(!err){
-			}
-		}, 'post', {
-			content: this.state.content,
-			impact: this.state.impact,
-			ease: this.state.ease,
-			confidence: this.state.confidence,
-		});
-	}
-	handleInputChange(event) {
-		const target = event.target;
-		const value = target.type === 'checkbox' ? target.checked : target.value;
-		const name = target.name;
-
-		this.setState({
-			[name]: value
-		});
-	}
-	render() {
-		const options = Array(10).fill().map((_, i) => <option key={i+1} value={i+1}>{i+1}</option>);
-		return (
-			<tr>
-				<td colSpan="6">
-					<form onSubmit={this.submit}>
-						<table className="table-nested">
-							<tbody>
-								<tr>
-									<td>
-										<input type="text" name="content" value={this.state.content} onChange={this.handleInputChange}/>
-									</td>
-									<td>
-										<select name="impact" value={this.state.impact} onChange={this.handleInputChange}>
-											{options}
-										</select>
-									</td>
-									<td>
-										<select name="ease" value={this.state.ease} onChange={this.handleInputChange}>
-											{options}
-										</select>
-									</td>
-									<td>
-										<select name="confidence" value={this.state.confidence} onChange={this.handleInputChange}>
-											{options}
-										</select>
-									</td>
-									<td>
-										<span>10</span>
-									</td>
-									<td>
-										<RetinaImage src={process.env.PUBLIC_URL + '/images/Confirm_V.png'} alt="" onClick={this.submit}/>
-										<RetinaImage src={process.env.PUBLIC_URL + '/images/Cancel_X.png'} alt=""/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</form>
-				</td>
-			</tr>
-		)
-	}
-}
-
 
 class Main extends Component {
 	constructor(props) {
@@ -115,48 +12,127 @@ class Main extends Component {
 		this.state = {
 			ideas: []
 		}
+		this.newIdea = this.newIdea.bind(this);
+		this.editIdea = this.editIdea.bind(this);
+		this.createIdea = this.createIdea.bind(this);
+		this.updateIdea = this.updateIdea.bind(this);
+		this.removeIdea = this.removeIdea.bind(this);
+		this.closeForm = this.closeForm.bind(this);
 	}
 	componentDidMount() {
 		apiCall('ideas', (err, res) => {
 			if(res && res.status === 200){
-				this.setState({ideas: res.body})
+				let ideas = res.body.map((e) => ({record: {...e}, _fresh: false, _edit: false}));
+				this.setState({ideas: ideas})
 			}
 		});
 	}
+	newIdea(event) {
+		event.preventDefault();
+		const idea = {
+			_fresh: true,
+			_edit: true,
+			record: {
+				id: shortid.generate()
+			}
+		}
+		this.setState(prevState => ({
+			ideas: [idea, ...prevState.ideas]
+		}))
+	}
+	createIdea(record){
+		const index = this.state.ideas.findIndex((e) => e.record.id === record.oldId)
+		let cleanedRecord = update(record, {$unset: ['oldId']})
+
+		this.setState({
+			ideas: update(this.state.ideas, {[index]: {record: {$set: cleanedRecord}, _edit: {$set: false}, _fresh: {$set: false}}})
+		})
+	}
+	updateIdea(record){
+		const index = this.state.ideas.findIndex((e) => e.record.id === record.id)
+		this.setState({
+			ideas: update(this.state.ideas, {[index]: {record: {$set: record}, _edit: {$set: false}}})
+		})
+	}
+	removeIdea(id){
+		const index = this.state.ideas.findIndex((e) => e.record.id === id)
+		this.setState({
+			ideas: update(this.state.ideas, {$splice: [[index, 1]] })
+		})
+	}
+	closeForm(id){
+		const index = this.state.ideas.findIndex((e) => e.record.id === id)
+		let record = this.state.ideas[index];
+		if(record._fresh){
+			// removing object completely
+			this.setState({
+				ideas: update(this.state.ideas, {$splice: [[index, 1]] })
+			})
+		}
+		else {
+			// marking a flag of existing object
+			this.setState({
+				ideas: update(this.state.ideas, {[index]: {_edit: {$set: false}}})
+			})
+		}
+	}
+	editIdea(id){
+		const index = this.state.ideas.findIndex((e) => e.record.id === id)
+		this.setState({
+			ideas: update(this.state.ideas, {[index]: {_edit: {$set: true}}})
+		})
+	}
   render() {
+		const items = this.state.ideas.map((item, i) => {
+			if(item._edit){
+				return <IdeaForm	
+					key={item.record.id}
+					data={item.record}
+					fresh={item._fresh}
+					onAbort={this.closeForm}
+					onCreate={this.createIdea}
+					onUpdate={this.updateIdea}
+				/>
+			}
+			else {
+				return <Idea key={item.record.id} onEdit={this.editIdea} data={item.record}	onRemove={this.removeIdea} />
+			}
+		})
     return (
 			<div className="content-container">
 				<header className="page-header">
 					<h1 className="page-title">My Ideas</h1>
-					<a href="#"><RetinaImage src={process.env.PUBLIC_URL + '/images/btn_addanidea.png'} alt=""/></a>
+					<RetinaImage onClick={this.newIdea} src={process.env.PUBLIC_URL + '/images/btn_addanidea.png'} alt=""/>
 				</header>
-				<div className="results" style={{display: (this.state.ideas.length > 0 ? 'block' : 'none')}}>
-					<table>
-						<thead>
-							<tr>
-								<th></th>
-								<th>Impact</th>
-								<th>Ease</th>
-								<th>Confidence</th>
-								<th>Avg.</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody>
-							<IdeaForm data={{content: 'h', impact: 2, ease: 3, confidence: 4}} />
-							<IdeaList data={this.state.ideas}/>
-						</tbody>
-					</table>
-				</div>
-				<div className="empty-results" style={{display: (this.state.ideas.length === 0 ? 'block' : 'none')}}>
-					<div className="empty-results-message">
-						<RetinaImage src={process.env.PUBLIC_URL + '/images/bulb.png'} alt=""/>
-						<div>Got Ideas?</div>
+				{this.state.ideas.length > 0 ? (
+					<div className="results">
+						<table>
+							<thead>
+								<tr>
+									<th></th>
+									<th>Impact</th>
+									<th>Ease</th>
+									<th>Confidence</th>
+									<th>Avg.</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								{items}
+							</tbody>
+						</table>
 					</div>
-				</div>
+				) : (
+					<div className="empty-results">
+						<div className="empty-results-message">
+							<RetinaImage src={process.env.PUBLIC_URL + '/images/bulb.png'} alt=""/>
+							<div>Got Ideas?</div>
+						</div>
+					</div>
+				)}
 			</div>
     );
   }
 }
-
+//								<IdeaForm data={{content: 'h', impact: 2, ease: 3, confidence: 4}} />
 export default Main;
