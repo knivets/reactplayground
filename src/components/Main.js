@@ -5,6 +5,9 @@ import shortid from 'shortid';
 import IdeaForm from './IdeaForm';
 import Idea from './Idea';
 import { apiCall } from '../api';
+import {
+	Prompt
+} from 'react-router-dom'
 
 class Main extends Component {
 	constructor(props) {
@@ -40,8 +43,11 @@ class Main extends Component {
 			ideas: [idea, ...prevState.ideas]
 		}))
 	}
+	findIndex(id){
+		return this.state.ideas.findIndex((e) => e.record.id === id)
+	}
 	createIdea(record){
-		const index = this.state.ideas.findIndex((e) => e.record.id === record.oldId)
+		const index = this.findIndex(record.oldId)
 		let cleanedRecord = update(record, {$unset: ['oldId']})
 
 		this.setState({
@@ -49,19 +55,19 @@ class Main extends Component {
 		})
 	}
 	updateIdea(record){
-		const index = this.state.ideas.findIndex((e) => e.record.id === record.id)
+		const index = this.findIndex(record.id)
 		this.setState({
 			ideas: update(this.state.ideas, {[index]: {record: {$set: record}, _edit: {$set: false}}})
 		})
 	}
 	removeIdea(id){
-		const index = this.state.ideas.findIndex((e) => e.record.id === id)
+		const index = this.findIndex(id)
 		this.setState({
 			ideas: update(this.state.ideas, {$splice: [[index, 1]] })
 		})
 	}
 	closeForm(id){
-		const index = this.state.ideas.findIndex((e) => e.record.id === id)
+		const index = this.findIndex(id)
 		let record = this.state.ideas[index];
 		if(record._fresh){
 			// removing object completely
@@ -77,7 +83,7 @@ class Main extends Component {
 		}
 	}
 	editIdea(id){
-		const index = this.state.ideas.findIndex((e) => e.record.id === id)
+		const index = this.findIndex(id)
 		this.setState({
 			ideas: update(this.state.ideas, {[index]: {_edit: {$set: true}}})
 		})
@@ -102,8 +108,9 @@ class Main extends Component {
 			<div className="content-container">
 				<header className="page-header">
 					<h1 className="page-title">My Ideas</h1>
-					<RetinaImage onClick={this.newIdea} src={process.env.PUBLIC_URL + '/images/btn_addanidea.png'} alt=""/>
+					<RetinaImage className="add-idea-btn" onClick={this.newIdea} src={process.env.PUBLIC_URL + '/images/btn_addanidea.png'} alt=""/>
 				</header>
+				<Prompt when={true} message="hello"/>
 				{this.state.ideas.length > 0 ? (
 					<div className="results">
 						<table>

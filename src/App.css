@@ -211,6 +211,26 @@ input::placeholder
 	margin-left: 5%;
 }
 
+.results th:first-child,
+.results td:first-child
+{
+	width: 50%;
+}
+
+.results th:nth-child(2),
+.results td:nth-child(2),
+.results th:nth-child(3),
+.results td:nth-child(3),
+.results th:nth-child(4),
+.results td:nth-child(4),
+.results th:nth-child(5),
+.results td:nth-child(5),
+.results th:nth-child(6),
+.results td:nth-child(6)
+{
+	width: 10%;
+}
+
 .results table th
 {
 	font-family: .AppleSystemUIFont;
@@ -234,7 +254,6 @@ input::placeholder
 .results table td:nth-child(1),
 .table-form-cell:nth-child(1)
 {
-	width: 50%;
 	text-align: left;
 	position: relative;
 }
@@ -288,4 +307,18 @@ table.table-nested
 table.table-nested td:nth-child(1):before
 {
 	content: none;
+}
+
+.table-controls button,
+.table-controls img
+{
+	border: 0;
+	border-radius: 0;
+	padding: 0;
+	cursor: pointer;
+}
+
+.add-idea-btn
+{
+	cursor: pointer;
 }

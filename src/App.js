@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import RetinaImage from 'react-retina-image';
-import { currentUser } from './auth';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -15,6 +14,7 @@ import {
 	Logout,
 	Main
 } from './components/index';
+import { apiCall } from './api';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
 	if(rest.loaded === true){
@@ -61,24 +61,22 @@ class App extends Component {
 		this.updateUser = this.updateUser.bind(this);
 	}
 	updateUser(cb){
-		// used in child components as a
-		// mechanism to lift up state
-		currentUser((err, user) => {
+		apiCall('me', (err, res) => {
 			if(err){
 				this.setState({user: false}, cb);
 			}
 			else {
-				this.setState({user: user}, cb);
+				this.setState({user: res.body}, cb);
 			}
 		});
 	}
 	componentDidMount() {
-		currentUser((err, user) => {
+		apiCall('me', (err, res) => {
 			if(err){
 				this.setState({user: false, loaded: true});
 			}
 			else {
-				this.setState({user: user, loaded: true});
+				this.setState({user: res.body, loaded: true});
 			}
 		});
 	}

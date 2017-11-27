@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import RetinaImage from 'react-retina-image';
+import shortid from 'shortid';
 import { apiCall } from '../api';
 
 class IdeaForm extends Component {
@@ -8,6 +9,7 @@ class IdeaForm extends Component {
 		var state;
 		if(props.fresh){
 			state = {
+				// stub id, used to id the view
 				id: props.data.id,
 				content: '',
 				impact: 1,
@@ -20,6 +22,7 @@ class IdeaForm extends Component {
 			state = props.data;
 		}
 		this.state = state;
+		this.state.updating = false;
 		this.submit = this.submit.bind(this);
 		this.abort = this.abort.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
@@ -70,12 +73,14 @@ class IdeaForm extends Component {
 	}
 	submit(event) {
 		event.preventDefault();
-		if(this.props.fresh){
-			this.create();
-		}
-		else {
-			this.update();
-		}
+		this.setState({updating: true}, () => {
+			if(this.props.fresh){
+				this.create();
+			}
+			else {
+				this.update();
+			}
+		})
 	}
 	handleInputChange(event) {
 		const target = event.target;
@@ -87,7 +92,8 @@ class IdeaForm extends Component {
 		});
 	}
 	render() {
-		const options = Array(10).fill().map((_, i) => <option key={i+1} value={i+1}>{i+1}</option>);
+		const options = Array(10).fill().map((_, i) => <option key={shortid.generate()} value={i+1}>{i+1}</option>);
+		const disabledAttribute = this.state.updating ? {disabled: 'disabled'} : {}
 		return (
 			<tr>
 				<td colSpan="6">
@@ -96,7 +102,7 @@ class IdeaForm extends Component {
 							<tbody>
 								<tr>
 									<td>
-										<input type="text" name="content" value={this.state.content} onChange={this.handleInputChange}/>
+										<input type="text" name="content" value={this.state.content} onChange={this.handleInputChange} required/>
 									</td>
 									<td>
 										<select name="impact" value={this.state.impact} onChange={this.handleInputChange}>
@@ -113,12 +119,14 @@ class IdeaForm extends Component {
 											{options}
 										</select>
 									</td>
-									<td>
-										<span>{this.state.average_score}</span>
-									</td>
-									<td>
-										<RetinaImage src={process.env.PUBLIC_URL + '/images/Confirm_V.png'} alt="" onClick={this.submit}/>
-										<RetinaImage src={process.env.PUBLIC_URL + '/images/Cancel_X.png'} alt="" onClick={this.abort}/>
+									<td>{Math.round(this.state.average_score*100)/100}</td>
+									<td className="table-controls">
+										<button {...disabledAttribute }>
+											<RetinaImage src={process.env.PUBLIC_URL + '/images/Confirm_V.png'} alt=""/>
+										</button>
+										<button {...disabledAttribute }>
+											<RetinaImage src={process.env.PUBLIC_URL + '/images/Cancel_X.png'} alt="" onClick={this.abort}/>
+										</button>
 									</td>
 								</tr>
 							</tbody>

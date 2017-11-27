@@ -26,8 +26,8 @@ class Idea extends Component {
 				<td>{this.props.data.impact}</td>
 				<td>{this.props.data.ease}</td>
 				<td>{this.props.data.confidence}</td>
-				<td>{this.props.data.average_score}</td>
-				<td>
+				<td>{Math.round(this.props.data.average_score*100)/100}</td>
+				<td className="table-controls">
 					<RetinaImage src={process.env.PUBLIC_URL + '/images/pen.png'} alt="" onClick={this.edit}/>
 					<RetinaImage src={process.env.PUBLIC_URL + '/images/bin.png'} alt="" onClick={this.remove}/>
 				</td>
