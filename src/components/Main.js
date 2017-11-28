@@ -19,13 +19,25 @@ class Main extends Component {
 		this.removeIdea = this.removeIdea.bind(this);
 		this.closeForm = this.closeForm.bind(this);
 	}
+	pullIdeas(){
+		// recursive routine which will fetch ideas
+		// until there is no left
+		let self = this;
+		(function _pullIdeas(page = 1){
+			apiCall(`ideas?page=${page}`, (err, res) => {
+				if(res && res.status === 200){
+					if(res.body.length > 0){
+						let ideas = res.body.map((e) => ({record: {...e}, _fresh: false, _edit: false}));
+						self.setState({
+							ideas: update(self.state.ideas, {$push: ideas})
+						}, () => _pullIdeas(page + 1))
+					}
+				}
+			});
+		})();
+	}
 	componentDidMount() {
-		apiCall('ideas', (err, res) => {
-			if(res && res.status === 200){
-				let ideas = res.body.map((e) => ({record: {...e}, _fresh: false, _edit: false}));
-				this.setState({ideas: ideas})
-			}
-		});
+		this.pullIdeas()
 	}
 	newIdea(event) {
 		event.preventDefault();
