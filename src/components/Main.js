@@ -5,9 +5,6 @@ import shortid from 'shortid';
 import IdeaForm from './IdeaForm';
 import Idea from './Idea';
 import { apiCall } from '../api';
-import {
-	Prompt
-} from 'react-router-dom'
 
 class Main extends Component {
 	constructor(props) {
@@ -110,7 +107,6 @@ class Main extends Component {
 					<h1 className="page-title">My Ideas</h1>
 					<RetinaImage className="add-idea-btn" onClick={this.newIdea} src={process.env.PUBLIC_URL + '/images/btn_addanidea.png'} alt=""/>
 				</header>
-				<Prompt when={true} message="hello"/>
 				{this.state.ideas.length > 0 ? (
 					<div className="results">
 						<table>
@@ -141,5 +137,5 @@ class Main extends Component {
     );
   }
 }
-//								<IdeaForm data={{content: 'h', impact: 2, ease: 3, confidence: 4}} />
+
 export default Main;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import RetinaImage from 'react-retina-image';
+import Popup from 'react-popup';
 import { apiCall } from '../api';
 
 class Idea extends Component {
@@ -13,11 +14,31 @@ class Idea extends Component {
 	}
 	remove(){
 		let url = `ideas/${this.props.data.id}`
-		apiCall(url, (err, res) => {
-			if(!err){
-				this.props.onRemove(this.props.data.id);
+		Popup.create({
+			title: 'Are you sure?',
+			content: 'This idea will be permanently deleted.',
+			className: 'alert',
+			buttons: {
+				left: [{
+					text: 'Cancel',
+					action: () => {
+						Popup.close()
+					}
+				}],
+				right: [{
+					text: 'Ok',
+					className: 'danger',
+					action: () => {
+						apiCall(url, (err, res) => {
+							if(!err){
+								Popup.close();
+								this.props.onRemove(this.props.data.id);
+							}
+						}, 'delete');
+					}
+				}],
 			}
-		}, 'delete');
+		})
 	}
 	render(){
 		return (

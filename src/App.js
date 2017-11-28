@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import RetinaImage from 'react-retina-image';
 import './App.css';
+import './Popup.css';
 import {
   BrowserRouter as Router,
   Route,
@@ -8,12 +9,15 @@ import {
   Link
 } from 'react-router-dom'
 
+import Popup from 'react-popup';
+
 import {
 	Login,
 	Signup,
 	Logout,
 	Main
 } from './components/index';
+
 import { apiCall } from './api';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -84,6 +88,7 @@ class App extends Component {
     return (
 			<Router>
 				<div className="container">
+					<Popup/>
 					<aside className="sidebar">
 						<div className="logo">
 							<Link to="/"><RetinaImage src={process.env.PUBLIC_URL + '/images/IdeaPool_icon.png'} alt=""/></Link>
